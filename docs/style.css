@@ -297,18 +297,6 @@ body {
 }
 
 /* ===============================
-   SUN TIMES
-================================ */
-.sun-times {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 4px;
-  font-size: 14px;
-  opacity: 0.85;
-}
-
-/* ===============================
    FOOTER
 ================================ */
 .app-footer {
@@ -396,6 +384,43 @@ body.night .weather-icon {
   animation-duration: 5s;
   opacity: 0.95;
 }
+
+.sun-moon-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.sky {
+  position: relative;
+  width: 100%;
+  max-width: 280px;
+  height: 140px;
+  margin: auto;
+  border-radius: 140px 140px 0 0;
+  background: linear-gradient(to top, #87ceeb, #e0f6ff);
+  overflow: hidden;
+}
+
+.sun, .moon {
+  position: absolute;
+  bottom: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  transition: transform 1s linear, opacity 0.5s;
+}
+
+.sun {
+  background: radial-gradient(circle, #ffd700, #ffa500);
+  box-shadow: 0 0 15px #ffd700;
+}
+
+.moon {
+  background: #f1f1f1;
+  box-shadow: 0 0 10px #ffffff;
+  opacity: 0;
+}
+
 
 /* ===============================
    WEATHER BACKGROUND EFFECTS
@@ -657,7 +682,9 @@ body.low-end *::after {
   margin-top: 6px;
   padding: 8px 12px;
   border-radius: var(--radius-md);
-  font-size: 14px;
+  font-size: 12px;
+  color: #333;
+  opacity: 0.85;
   background: rgba(255,255,255,0.65);
   backdrop-filter: blur(8px);
 }

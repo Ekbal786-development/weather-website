@@ -1,4 +1,46 @@
-const BASE_URL = "https://weather-backend-wo0y.onrender.com"
+const BASE_URL = "https://weather-backend-wo0y.onrender.com";
+
+/* ===============================
+      🕒 TIME FORMAT HELPER
+================================ */
+function formatTime(unixTime) {
+  return new Date(unixTime * 1000).toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
+
+/* ==========================
+   ☀️🌙 SUN–MOON ANIMATION
+========================== */
+function updateSunMoon(sunrise, sunset) {
+  const now = Date.now() / 1000;
+
+  const sun = document.querySelector(".sun");
+  const moon = document.querySelector(".moon");
+
+  if (!sun || !moon) return; // safety check
+
+  document.getElementById("sunrise-time").textContent =
+    "Sunrise: " + formatTime(sunrise);
+
+  document.getElementById("sunset-time").textContent =
+    "Sunset: " + formatTime(sunset);
+
+  if (now >= sunrise && now <= sunset) {
+    const progress = (now - sunrise) / (sunset - sunrise);
+    const x = progress * 240;
+    const y = Math.sin(progress * Math.PI) * 60;
+
+    sun.style.transform = `translate(${x}px, ${-y}px)`;
+    sun.style.opacity = 1;
+    moon.style.opacity = 0;
+  } else {
+    sun.style.opacity = 0;
+    moon.style.opacity = 1;
+    moon.style.transform = "translate(120px, -40px)";
+  }
+}
 
 /* ===============================
    PERFORMANCE DETECTION
@@ -372,10 +414,19 @@ async function fetchWeather(city) {
     if (!response.ok) throw new Error("API failed");
 
     const data = await response.json();
+
     statusMessage.textContent = "";
     retryBtn.style.display = "none";
+
     updateUI(data);
+
+    updateSunMoon(
+      data.sys.sunrise,
+      data.sys.sunset
+    );
+
     fetchForecast(city, data);
+    
   } catch(err) {
     console.error("Weather fetch error:",err);
     statusMessage.textContent = "❌ Unable to fetch weather.";
@@ -845,6 +896,7 @@ function removeFavorite(city) {
   saveFavorites(favorites);
   renderFavorites();
 }
+
 
 
 
