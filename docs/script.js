@@ -29,12 +29,20 @@ function updateSunMoon(sunrise, sunset) {
 
   if (now >= sunrise && now <= sunset) {
     const progress = (now - sunrise) / (sunset - sunrise);
-    const x = progress * 240;
-    const y = Math.sin(progress * Math.PI) * 60;
+    const arcWidth = 260; 
+    const arcHeight = 95;
+
+    const x = progress * arcWidth; 
+    const y = Math.sin(progress * Math.PI) * arcHeight;
 
     sun.style.transform = `translate(${x}px, ${-y}px)`;
     sun.style.opacity = 1;
     moon.style.opacity = 0;
+
+    const progressDot = document.getElementById("day-progress-dot");
+    if (progressDot) {
+    progressDot.style.left = `${progress * 100}%`;
+    }
   } else {
     sun.style.opacity = 0;
     moon.style.opacity = 1;
@@ -426,7 +434,7 @@ async function fetchWeather(city) {
     );
 
     fetchForecast(city, data);
-    
+
   } catch(err) {
     console.error("Weather fetch error:",err);
     statusMessage.textContent = "❌ Unable to fetch weather.";
