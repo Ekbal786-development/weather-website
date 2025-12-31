@@ -19,6 +19,7 @@ function getCityNow(timezoneOffset) {
 ========================== */
 function updateSunMoon(sunrise, sunset, timezone) {
   const now = getCityNow(timezone);
+  const isDay = now >= sunrise && now <= sunset;
 
   const sun = document.querySelector(".sun");
   const moon = document.querySelector(".moon");
@@ -40,8 +41,26 @@ function updateSunMoon(sunrise, sunset, timezone) {
     const y = Math.sin(progress * Math.PI) * arcHeight;
 
     sun.style.transform = `translate(${x}px, ${-y}px)`;
-    sun.style.opacity = 1;
-    moon.style.opacity = 0;
+    if (isDay) {
+      sun.style.opacity = 1;
+      moon.style.opacity = 0;
+
+      const progress = (now - sunrise) / (sunset - sunrise);
+
+      document.getElementById("day-progress-fill").style.width = 
+      `${Math.min(progress * 100, 100)}%`;
+
+      document.getElementById("day-progress-dot").style.left =
+      `${Math.min(progress * 100, 100)}%`;
+
+    } else {
+      sun.style.opacity = 0;
+      moon.style.opacity = 1;
+      
+      document.getElementById("day-progress-fill").style.width = "100%";
+      document.getElementById("day-progress-dot").style.left = "100%";
+    }
+
 
     const progressDot = document.getElementById("day-progress-dot");
     if (progressDot) {
