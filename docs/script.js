@@ -9,12 +9,16 @@ function formatTime(unixTime) {
     minute: '2-digit'
   });
 }
+function getCityNow(timezoneOffset) {
+  return Math.floor(Date.now() / 1000) + timezoneOffset;
+}
+
 
 /* ==========================
    ☀️🌙 SUN–MOON ANIMATION
 ========================== */
-function updateSunMoon(sunrise, sunset) {
-  const now = Date.now() / 1000;
+function updateSunMoon(sunrise, sunset, timezone) {
+  const now = getCityNow(timezone);
 
   const sun = document.querySelector(".sun");
   const moon = document.querySelector(".moon");
@@ -430,7 +434,8 @@ async function fetchWeather(city) {
 
     updateSunMoon(
       data.sys.sunrise,
-      data.sys.sunset
+      data.sys.sunset,
+      data.timezone
     );
 
     fetchForecast(city, data);
