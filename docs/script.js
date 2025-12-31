@@ -1,4 +1,4 @@
-const BASE_URL = "https://weather-backend-wo0y.onrender.com/"
+const BASE_URL = "https://weather-backend-wo0y.onrender.com"
 
 /* ===============================
    PERFORMANCE DETECTION
