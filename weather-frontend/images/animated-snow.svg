@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <g>
+    <path d="M20 36c-2-8 6-16 14-16 6 0 8 4 10 6 6 0 14 4 14 10 0 6-6 10-12 10H22" fill="#F0F9FF" />
+    <g fill="#60A5FA">
+      <circle cx="24" cy="48" r="1.8"><animate attributeName="cy" values="48;52;48" dur="1.5s" repeatCount="indefinite"/></circle>
+      <circle cx="32" cy="50" r="1.8"><animate attributeName="cy" values="50;54;50" dur="1.6s" repeatCount="indefinite"/></circle>
+      <circle cx="40" cy="48" r="1.8"><animate attributeName="cy" values="48;52;48" dur="1.4s" repeatCount="indefinite"/></circle>
+    </g>
+  </g>
+</svg>

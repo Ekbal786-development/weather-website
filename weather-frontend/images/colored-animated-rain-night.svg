@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <g>
+    <path d="M18 36c-2-8 6-16 14-16 6 0 8 4 10 6 6 0 14 4 14 10 0 6-6 10-12 10H22" fill="#94A3B8" />
+    <g stroke="#60A5FA" stroke-width="2" stroke-linecap="round">
+      <path d="M24 46l0 6"><animate attributeName="d" values="M24 46l0 6;M24 46l0 12;M24 46l0 6" dur="1s" repeatCount="indefinite"/></path>
+      <path d="M32 46l0 6"><animate attributeName="d" values="M32 46l0 6;M32 46l0 12;M32 46l0 6" dur="1.1s" repeatCount="indefinite"/></path>
+      <path d="M40 46l0 6"><animate attributeName="d" values="M40 46l0 6;M40 46l0 12;M40 46l0 6" dur="1.2s" repeatCount="indefinite"/></path>
+    </g>
+  </g>
+</svg>

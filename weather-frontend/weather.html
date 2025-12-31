@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App | Ekbal Shah</title>
+
+    <link rel="stylesheet" href="weather.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="app-header">
+        <h1>🌦 Weather App</h1>
+        <p>Search any city to get real-time weather updates</p>
+      </header>
+
+      <section class="card">
+        <div class="personal-bar">
+          <button id="open-personal">⚙️</button>
+        </div>
+
+        <!-- 🔍 SEARCH -->
+        <form class="search" id="weather-form">
+          <input
+            type="text"
+            id="city-input"
+            placeholder="Enter city name"
+            spellcheck="false"
+            required
+          />
+          <button type="submit" aria-label="Search weather">
+            <!-- Inline SVG for easier styling and crisp rendering -->
+            <svg
+              class="search-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <defs>
+                <linearGradient id="g" x1="0" x2="1">
+                  <stop offset="0%" stop-color="#4facfe" />
+                  <stop offset="100%" stop-color="#0b69ff" />
+                </linearGradient>
+              </defs>
+              <circle
+                cx="11"
+                cy="11"
+                r="7"
+                stroke="url(#g)"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                fill="none"
+              />
+              <path
+                d="M20 20l-3.5-3.5"
+                stroke="#0b69ff"
+                stroke-width="2.2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                fill="none"
+              />
+            </svg>
+          </button>
+        </form>
+
+        <p class="status-message" id="status-message"></p>
+        <div class="loader" id="loader"></div>
+        <button class="retry-btn" id="retry-btn" type="button">Retry</button>
+
+        <section class="zone zone-hero">
+          <div class="weather" id="weather-result">
+            <img
+              src="images/rain.png"
+              alt="Weather icon"
+              class="weather-icon"
+            />
+            <h2 class="temp">--°C</h2>
+            <div class="temp-range">
+              <span class="range" id="today-range">--°/--°</span>
+            </div>
+            <h3 class="city">City</h3>
+            <button id="add-favorite" class="add-fav">
+              ⭐ Add to Favorites
+            </button>
+
+            <p class="description">Weather description</p>
+            <p class="weather-summary" id="weather-summary"></p>
+          </div>
+        </section>
+
+        <section class="zone zone-insights">
+          <div class="insights-grid">
+            <div class="insight-card">
+              <span class="label">Feels like</span>
+              <strong class="value" id="feels-like">--°C</strong>
+            </div>
+
+            <div class="insight-card aqi-card">
+              <span class="label">Air Quality</span>
+              <strong class="value" id="aqi-text">--</strong>
+            </div>
+
+            <div class="insight-card">
+              <span class="label">Humidity</span>
+              <strong class="value" id="humidity-text">--%</strong>
+            </div>
+
+            <div class="insight-card">
+              <span class="label">Wind</span>
+              <strong class="value" id="wind-text">-- km/h</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="zone zone-forecast">
+          <div class="sun-times">
+            <div class="sun">🌅 <span id="sunrise">--:--</span></div>
+            <div class="sun">🌇 <span id="sunset">--:--</span></div>
+          </div>
+
+          <div class="day-progress">
+            <span class="sun-time"> 🌅 <span id="sunrise-progress">--:--</span> </span>
+
+            <div class="progress-track">
+              <div class="progress-fill" id="day-progress-fill"></div>
+              <div class="progress-dot" id="day-progress-dot"></div>
+            </div>
+
+            <span class="sun-time"> 🌇 <span id="sunset-progress">--:--</span> </span>
+          </div>
+
+          <div class="hourly" id="hourly-forecast">
+            <h4>Hourly Forecast</h4>
+            <canvas id="hourly-temp-chart" height="120"></canvas>
+            <div class="hourly-list" id="hourly-list"></div>
+          </div>
+
+          <div class="daily" id="daily-forecast">
+            <h4>5-Day Forecast</h4>
+            <div class="daily-list" id="daily-list"></div>
+          </div>
+        </section>
+
+        <section class="zone zone-intelligence">
+          <!-- Intelligence Section -->
+          <div class="intelligence">
+            <p class="intel-greeting" id="intel-greeting">--</p>
+
+            <button class="intel-toggle" id="intel-toggle">
+              🧠 Today’s Insights
+              <span class="chevron">▾</span>
+            </button>
+
+            <div class="intel-content" id="intel-content">
+              <p class="intel-score">
+                Weather Score: <strong id="weather-score-text">--</strong>
+              </p>
+
+              <p class="intel-explain" id="weather-score-explain">--</p>
+
+              <p class="intel-outfit" id="intel-outfit">--</p>
+            </div>
+          </div>
+        </section>
+      </section>
+      <div class="personal-panel" id="personal-panel">
+        <div class="personal-header">
+          <h4>Your Space</h4>
+          <button
+            class="close-personal"
+            id="close-personal"
+            aria-label="Close panel"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div class="personal-section">
+          <p class="label">Favorite cities</p>
+          <div id="favorite-cities" class="favorites"></div>
+        </div>
+      </div>
+      <div class="panel-overlay" id="panel-overlay"></div>
+
+      <footer class="app-footer">
+        <p>Built using HTML, CSS, JavaScript & OpenWeather API</p>
+      </footer>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="weather.js"></script>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <g>
+    <circle cx="32" cy="32" r="12" fill="#FFF7ED" fill-opacity="0.9">
+      <animate attributeName="r" values="11;13;11" dur="2s" repeatCount="indefinite" />
+    </circle>
+    <g stroke="#FDE68A" stroke-width="2">
+      <path d="M32 6v8"><animate attributeName="opacity" values="0.9;0.5;0.9" dur="2s" repeatCount="indefinite"/></path>
+      <path d="M32 50v8"><animate attributeName="opacity" values="0.9;0.5;0.9" dur="2s" repeatCount="indefinite"/></path>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <g>
+    <g transform="translate(0,0)">
+      <path d="M20 40c-4-8 4-16 12-16 6 0 8 4 10 6 6 0 14 4 14 10 0 6-6 10-12 10H18c-6 0-10-6-8-12 2-6 8-8 12-8" fill="#E0E7FF">
+        <animateTransform attributeName="transform" type="translate" values="0 0;2 0;0 0" dur="3s" repeatCount="indefinite"/>
+      </path>
+    </g>
+  </g>
+</svg>
