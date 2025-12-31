@@ -248,7 +248,7 @@ function getAqiLabel(aqi) {
 async function fetchAirQuality(lat, lon) {
   try {
     const res = await fetch(
-      `{BASE_URL}/api/air-quality?lat=${lat}&lon=${lon}`
+      `${BASE_URL}/api/air-quality?lat=${lat}&lon=${lon}`
     );
     const data = await res.json();
 
@@ -368,7 +368,7 @@ async function fetchWeather(city) {
     loader.style.display = "block";
     weatherBox.style.display = "none";
 
-    const response = await fetch(`{BASE_URL}/api/weather?city=${city}`);
+    const response = await fetch(`${BASE_URL}/api/weather?city=${city}`);
     if (!response.ok) throw new Error("API failed");
 
     const data = await response.json();
@@ -388,7 +388,7 @@ async function fetchWeather(city) {
 
 async function fetchForecast(city, currentData) {
   try {
-    const response = await fetch(`{BASE_URL}/api/forecast?city=${city}`);
+    const response = await fetch(`${BASE_URL}/api/forecast?city=${city}`);
     if (!response.ok) throw new Error("Forecast failed");
 
     const data = await response.json();
