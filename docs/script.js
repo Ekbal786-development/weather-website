@@ -4,11 +4,14 @@ const BASE_URL = "https://weather-backend-wo0y.onrender.com";
       🕒 TIME FORMAT HELPER
 ================================ */
 function formatSunTime(unix, timezoneOffset) {
-  return new Date((unix + timezoneOffset) * 1000).toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit"
-  });
+  const d = new Date((unix + timezoneOffset) * 1000);
+
+  const hours = String(d.getUTCHours()).padStart(2, "0");
+  const minutes = String(d.getUTCMinutes()).padStart(2, "0");
+
+  return `${hours}:${minutes}`;
 }
+
 
 function updateSunriseSunset(data) {
   const sunriseUTC = data.sys.sunrise;
