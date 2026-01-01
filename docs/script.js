@@ -3,22 +3,11 @@ const BASE_URL = "https://weather-backend-wo0y.onrender.com";
 /* ===============================
       🕒 TIME FORMAT HELPER
 ================================ */
-function formatSunTime(unix, timezoneOffset) {
-  const d = new Date((unix + timezoneOffset) * 1000);
-
-  const hours = String(d.getUTCHours()).padStart(2, "0");
-  const minutes = String(d.getUTCMinutes()).padStart(2, "0");
-
-  return `${hours}:${minutes}`;
-}
-
-
 function updateSunriseSunset(data) {
-  const sunriseUTC = data.sys.sunrise;
-  const sunsetUTC = data.sys.sunset;
-  const tz = data.timezone;
-
-  const nowUTC = Math.floor(Date.now() / 1000);
+  const sunrise = data.sys.sunrise; // UTC seconds
+  const sunset = data.sys.sunset;   // UTC seconds
+  const tz = data.timezone;         // offset seconds
+  const now = data.dt;              // ✅ city current time (UTC seconds)
 
   const sunriseEl = document.getElementById("sunrise-time");
   const sunsetEl = document.getElementById("sunset-time");
@@ -26,32 +15,69 @@ function updateSunriseSunset(data) {
   const indicatorEl = document.getElementById("sun-indicator");
   const statusEl = document.getElementById("sun-status");
 
-  if (!sunriseEl || !sunsetEl || !fillEl || !indicatorEl || !statusEl)
-    {
-    console.warn("Sunrise-Sunset elements missing, skipping update");
-    return;
-    }
+  if (!sunriseEl || !sunsetEl || !fillEl || !indicatorEl || !statusEl) return;
 
-  sunriseEl.textContent = formatSunTime(sunriseUTC, tz);
-  sunsetEl.textContent = formatSunTime(sunsetUTC, tz);
+  sunriseEl.textContent = formatSunTime(sunrise, tz);
+  sunsetEl.textContent = formatSunTime(sunset, tz);
 
-  //  🌙 Night time
-  if (nowUTC < sunriseUTC || nowUTC > sunsetUTC) {
+  // 🌙 Night
+  if (now < sunrise || now > sunset) {
     fillEl.style.width = "100%";
     indicatorEl.style.left = "100%";
     statusEl.textContent = "🌙 Currently night in this city";
     return;
-
   }
 
-    // ☀️ Daytime progress
-    const progress = ((nowUTC - sunriseUTC) / (sunsetUTC - sunriseUTC));
-    const percent = Math.min(Math.max(progress * 100, 0), 100);
+  // ☀️ Day
+  const progress = (now - sunrise) / (sunset - sunrise);
+  const percent = Math.round(progress * 100);
 
-    fillEl.style.width = `${percent}%`;
-    indicatorEl.style.left = `${percent}%`;
-    statusEl.textContent = "☀️ Daylight in progress";
+  fillEl.style.width = `${percent}%`;
+  indicatorEl.style.left = `${percent}%`;
+  statusEl.textContent = "☀️ Daylight in progress";
 }
+function formatSunTime(unix, timezoneOffset) {
+  const d = new Date((unix + timezoneOffset) * 1000);
+  return `${String(d.getUTCHours()).padStart(2, "0")}:${String(
+    d.getUTCMinutes()
+  ).padStart(2, "0")}`;
+}
+
+
+function updateSunriseSunset(data) {
+  const sunrise = data.sys.sunrise; // UTC seconds
+  const sunset = data.sys.sunset;   // UTC seconds
+  const tz = data.timezone;         // offset seconds
+  const now = data.dt;              // ✅ city current time (UTC seconds)
+
+  const sunriseEl = document.getElementById("sunrise-time");
+  const sunsetEl = document.getElementById("sunset-time");
+  const fillEl = document.getElementById("sun-progress-fill");
+  const indicatorEl = document.getElementById("sun-indicator");
+  const statusEl = document.getElementById("sun-status");
+
+  if (!sunriseEl || !sunsetEl || !fillEl || !indicatorEl || !statusEl) return;
+
+  sunriseEl.textContent = formatSunTime(sunrise, tz);
+  sunsetEl.textContent = formatSunTime(sunset, tz);
+
+  // 🌙 Night
+  if (now < sunrise || now > sunset) {
+    fillEl.style.width = "100%";
+    indicatorEl.style.left = "100%";
+    statusEl.textContent = "🌙 Currently night in this city";
+    return;
+  }
+
+  // ☀️ Day
+  const progress = (now - sunrise) / (sunset - sunrise);
+  const percent = Math.round(progress * 100);
+
+  fillEl.style.width = `${percent}%`;
+  indicatorEl.style.left = `${percent}%`;
+  statusEl.textContent = "☀️ Daylight in progress";
+}
+
 
 /* ===============================
    PERFORMANCE DETECTION
