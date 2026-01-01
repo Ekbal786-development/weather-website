@@ -116,30 +116,30 @@
         </section>
 
         <section class="zone zone-forecast">
-          <div class="sun-moon-container">
-            <div class="sky">
-              <div class="sun"></div>
-              <div class="moon"></div>
-            </div>
-            <div class="sun-times">
-              <span id="sunrise-time">Sunrise: --</span>
-              <span id="sunset-time">Sunset: --</span>
-            </div>
-          </div>
-
-          <div class="day-progress">
-            <span class="sun-time">
-              🌅 <span id="sunrise-progress">--:--</span>
-            </span>
-
-            <div class="progress-track">
-              <div class="progress-fill" id="day-progress-fill"></div>
-              <div class="progress-dot" id="day-progress-dot"></div>
+          <!-- 🌅 Sunrise & Sunset Card -->
+          <div class="sun-card">
+            <div class="sun-card-header">
+              <h4>🌅 Sunrise & Sunset</h4>
             </div>
 
-            <span class="sun-time">
-              🌇 <span id="sunset-progress">--:--</span>
-            </span>
+            <div class="sun-times-row">
+              <div class="sun-time-block">
+                <span class="label">Sunrise</span>
+                <strong id="sunrise-time">--:--</strong>
+              </div>
+
+              <div class="sun-time-block">
+                <span class="label">Sunset</span>
+                <strong id="sunset-time">--:--</strong>
+              </div>
+            </div>
+
+            <div class="sun-progress-track">
+              <div class="sun-progress-fill" id="sun-progress-fill"></div>
+              <div class="sun-indicator" id="sun-indicator"></div>
+            </div>
+
+            <p class="sun-status" id="sun-status">--</p>
           </div>
 
           <div class="hourly" id="hourly-forecast">
