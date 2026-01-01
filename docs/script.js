@@ -586,9 +586,11 @@ async function fetchWeather(city) {
     statusMessage.textContent = "";
     retryBtn.style.display = "none";
 
+    window.__currentWeatherData = data;
+
     updateUI(data);
 
-    startSunProgressUpdates(data);
+    updateSunriseSunset(data);
 
     updateMoonTimes(data);
 
@@ -1021,6 +1023,14 @@ function removeFavorite(city) {
   saveFavorites(favorites);
   renderFavorites();
 }
+/* ===============================
+   ⏱ LIVE SUN & MOON UPDATE
+================================ */
+setInterval(() => {
+  if (window.__currentWeatherData) {
+    updateSunriseSunset(window.__currentWeatherData);
+  }
+}, 60 * 1000); // every minute
 
 
 
