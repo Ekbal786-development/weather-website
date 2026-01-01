@@ -361,7 +361,7 @@ function getDailyIconFor(icon) {
 }
 
 function generateWeatherSummary(data) {
-  const temp = convertTemp(data.main.temp);
+  const tempC = Math.round(data.main.temp);
   const condition = data.weather[0].main.toLowerCase();
   const windKmh = Math.round(data.wind.speed * 3.6);
 
@@ -398,10 +398,10 @@ function generateWeatherSummary(data) {
   if (windKmh > 25) {
     return "Windy conditions today. Be cautious outdoors.";
   }
-  if (temp >= 30) {
+  if (tempC >= 30) {
     return "Hot weather today. Stay hydrated.";
   }
-  if (temp <= 10) {
+  if (tempC <= 10) {
     return "Cold weather today. Layer up.";
   }
 
