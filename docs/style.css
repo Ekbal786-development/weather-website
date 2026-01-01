@@ -322,6 +322,17 @@ body {
   text-align: center;
 }
 
+.moon-times-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.moon-time-block {
+  text-align: center;
+  font-size: 14px;
+}
+
 /* ===============================
    HOURLY TEMPERATURE CHART
 ================================ */

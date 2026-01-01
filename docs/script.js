@@ -103,6 +103,37 @@ function updateSunriseSunset(data) {
   statusEl.textContent = "☀️ Daylight in progress";
 }
 
+function updateMoonTimes(data) {
+  const lat = data.coord.lat;
+  const lon = data.coord.lon;
+
+  const moonriseEl = document.getElementById("moonrise-time");
+  const moonsetEl = document.getElementById("moonset-time");
+
+  if (!moonriseEl || !moonsetEl) return;
+
+  const now = new Date((data.dt + data.timezone) * 1000);
+
+  const times = SunCalc.getMoonTimes(now, lat, lon);
+
+  if (times.rise) {
+    moonriseEl.textContent = times.rise.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  } else {
+    moonriseEl.textContent = "—";
+  }
+
+  if (times.set) {
+    moonsetEl.textContent = times.set.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  } else {
+    moonsetEl.textContent = "—";
+  }
+}
 
 /* ===============================
    PERFORMANCE DETECTION
@@ -481,6 +512,8 @@ async function fetchWeather(city) {
     updateUI(data);
 
     startSunProgressUpdates(data);
+
+    updateMoonTimes(data);
 
     fetchForecast(city, data);
 

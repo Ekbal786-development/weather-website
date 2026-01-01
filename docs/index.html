@@ -140,6 +140,17 @@
             </div>
 
             <p class="sun-status" id="sun-status">--</p>
+            <div class="moon-times-row">
+              <div class="moon-time-block">
+                <span class="label">Moonrise</span>
+                <strong id="moonrise-time">--:--</strong>
+              </div>
+
+              <div class="moon-time-block">
+                <span class="label">Moonset</span>
+                <strong id="moonset-time">--:--</strong>
+              </div>
+            </div>
           </div>
 
           <div class="hourly" id="hourly-forecast">
@@ -201,6 +212,7 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/suncalc/suncalc.js"></script>
 
     <script src="script.js"></script>
   </body>
