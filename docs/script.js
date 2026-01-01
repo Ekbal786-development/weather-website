@@ -382,7 +382,7 @@ function generateWeatherSummary(data) {
     if (windKmh > 25) {
       return "Windy night conditions expected.";
     }
-    if (temp <= 10) {
+    if (tempC <= 10) {
       return "Chilly night with low temperatures.";
     }
     return "Quiet night with stable weather conditions.";
