@@ -178,6 +178,16 @@ function updateMoonProgress(data) {
   moonEl.style.left = `${percent}%`;
 }
 
+function getMoonPhaseName(phase) {
+  if (phase === 0 || phase === 1) return "New Moon";
+  if (phase < 0.25) return "Waxing Crescent";
+  if (phase === 0.25) return "First Quarter";
+  if (phase < 0.5) return "Waxing Gibbous";
+  if (phase === 0.5) return "Full Moon";
+  if (phase < 0.75) return "Waning Gibbous";
+  if (phase === 0.75) return "Last Quarter";
+  return "Waning Crescent";
+}
 
 /* ===============================
    PERFORMANCE DETECTION
@@ -759,6 +769,32 @@ const addFavBtn = document.getElementById("add-favorite");
 if (addFavBtn) {
   addFavBtn.onclick = () => addFavorite(data.name);
 }
+
+/* ===============================
+   🌗 MOON PHASE (SunCalc)
+================================ */
+const moonPhaseText = document.getElementById("moon-phase-text");
+const moonPhaseIcon = document.getElementById("moon-phase-icon");
+
+if (moonPhaseText) {
+  // Use city coordinates + current date
+  const moonData = SunCalc.getMoonIllumination(
+    new Date(),
+    data.coord.lat,
+    data.coord.lon
+  );
+
+  const phase = moonData.phase; // 0 → 1
+  moonPhaseText.textContent = getMoonPhaseName(phase);
+
+  // Optional icon support (if images exist)
+  if (moonPhaseIcon) {
+    const phaseIndex = Math.round(phase * 8);
+    moonPhaseIcon.src = `images/moon-${phaseIndex}.png`;
+  }
+}
+
+
 }
 
 /* ===============================

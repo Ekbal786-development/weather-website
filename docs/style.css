@@ -349,6 +349,23 @@ body {
   font-size: 14px;
 }
 
+.moon-phase {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  justify-content: center;
+}
+
+.moon-phase img {
+  width: 36px;
+  height: 36px;
+  animation: moonFloat 4s ease-in-out infinite;
+}
+@keyframes moonFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
 /* ===============================
    HOURLY TEMPERATURE CHART
 ================================ */
