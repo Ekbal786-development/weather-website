@@ -10,10 +10,6 @@ function formatSunTime(unix, timezoneOffset) {
   });
 }
 
-function getCityNow(timezoneOffset) {
-  return Math.floor(Date.now() / 1000) + timezoneOffset;
-}
-
 function updateSunriseSunset(data) {
   const sunrise = data.sys.sunrise;
   const sunset = data.sys.sunset;
@@ -23,9 +19,12 @@ function updateSunriseSunset(data) {
 
   const sunriseEl = document.getElementById("sunrise-time");
   const sunsetEl = document.getElementById("sunset-time");
-  const fillEl = document.getElementById("sunr-progress-fill");
+  const fillEl = document.getElementById("sun-progress-fill");
   const indicatorEl = document.getElementById("sun-indicator");
   const statusEl = document.getElementById("sun-status");
+
+  if (!sunriseEl || !sunsetEl || !fillEl || !indicatorEl || !statusEl) return;
+
 
   sunriseEl.textContent = formatSunTime(sunrise, tz);
   sunsetEl.textContent = formatSunTime(sunset, tz);
@@ -76,8 +75,6 @@ const loader = document.getElementById("loader");
 const retryBtn = document.getElementById("retry-btn");
 const hourlyList = document.getElementById("hourly-list");
 const dailyList = document.getElementById("daily-list");
-const sunriseEl = document.getElementById("sunrise");
-const sunsetEl = document.getElementById("sunset");
 const todayRangeEl = document.getElementById("today-range");
 
 /* ===============================
@@ -591,52 +588,6 @@ if (windText) {
 }
 
   /* ===============================
-     SUNRISE / SUNSET
-  ================================ */
-  const tz = data.timezone;
-
-  const sunriseMain = document.getElementById("sunrise");
-const sunsetMain = document.getElementById("sunset");
-const sunriseProgress = document.getElementById("sunrise-progress");
-const sunsetProgress = document.getElementById("sunset-progress");
-
-const sunriseTime = formatLocalTime(data.sys.sunrise, tz);
-const sunsetTime = formatLocalTime(data.sys.sunset, tz);
-
-if (sunriseMain) sunriseMain.textContent = sunriseTime;
-if (sunsetMain) sunsetMain.textContent = sunsetTime;
-if (sunriseProgress) sunriseProgress.textContent = sunriseTime;
-if (sunsetProgress) sunsetProgress.textContent = sunsetTime;
-
-  
-
-  /* ===============================
-   DAY PROGRESS BAR (SUNRISE → SUNSET)
-=============================== */
-const progressFill = document.getElementById("day-progress-fill");
-const progressDot = document.getElementById("day-progress-dot");
-
-if (progressFill && progressDot) {
-  const now = data.dt;
-  const sunrise = data.sys.sunrise;
-  const sunset = data.sys.sunset;
-
-  let progress;
-
-  if (now <= sunrise) {
-    progress = 0;
-  } else if (now >= sunset) {
-    progress = 100;
-  } else {
-    progress = ((now - sunrise) / (sunset - sunrise)) * 100;
-  }
-
-  progressFill.style.width = `${progress}%`;
-  progressDot.style.left = `${progress}%`;
-}
-
-
-  /* ===============================
      FINAL UI STATE
   ================================ */
   weatherBox.style.display = "block";
@@ -668,17 +619,10 @@ if (scoreExplain) {
     : "Challenging weather today. Plan carefully.";
 }
 fetchAirQuality(data.coord.lat, data.coord.lon);
-addFavorite(data.name);
 const addFavBtn = document.getElementById("add-favorite");
 if (addFavBtn) {
   addFavBtn.onclick = () => addFavorite(data.name);
 }
-}
-function formatLocalTime(unix, tz) {
-  const d = new Date((unix + tz) * 1000);
-  return `${String(d.getUTCHours()).padStart(2, "0")}:${String(
-    d.getUTCMinutes()
-  ).padStart(2, "0")}`;
 }
 
 /* ===============================
@@ -828,25 +772,6 @@ overlay.addEventListener("click", () => {
   personalPanel.classList.remove("open");
   overlay.classList.remove("active");
 });
-
-/* ===============================
-   FAVORITE CITIES
-================================ */
-const favoritesContainer = document.getElementById("favorite-cities");
-
-function loadFavorites() {
-  if (!favoritesContainer) return;
-  const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-  favoritesContainer.innerHTML = "";
-
-  favorites.forEach(city => {
-    const div = document.createElement("div");
-    div.className = "favorite-item";
-    div.textContent = city;
-    div.onclick = () => fetchWeather(city);
-    favoritesContainer.appendChild(div);
-  });
-}
 
 function showToast(message) {
   // Simple, non-intrusive feedback
