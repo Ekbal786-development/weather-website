@@ -158,6 +158,26 @@ function updateMoonPhase(data) {
   phaseEl.textContent = `🌙 ${phaseName} — ${illumination}% illuminated`;
 }
 
+function updateMoonProgress(data) {
+  const moonEl = document.getElementById("moon-indicator");
+  if (!moonEl) return;
+
+  const now = data.dt;
+  const sunset = data.sys.sunset;
+  const nextSunrise = data.sys.sunrise + 86400;
+
+  if (now < sunset || now > nextSunrise) {
+    moonEl.style.display = "none";
+    return;
+  }
+
+  const progress = (now - sunset) / (nextSunrise - sunset);
+  const percent = Math.min(Math.max(progress * 100, 0), 100);
+
+  moonEl.style.display = "block";
+  moonEl.style.left = `${percent}%`;
+}
+
 
 /* ===============================
    PERFORMANCE DETECTION
@@ -540,6 +560,8 @@ async function fetchWeather(city) {
     updateMoonTimes(data);
 
     updateMoonPhase(data);
+
+    updateMoonProgress(data);
 
     fetchForecast(city, data);
 

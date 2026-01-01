@@ -314,6 +314,16 @@ body {
   left: 0%;
   transition: left 0.6s ease;
 }
+.moon-indicator {
+  position: absolute;
+  top: -6px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #e0e7ff;
+  box-shadow: 0 0 10px rgba(180, 200, 255, 0.8);
+  display: none;
+}
 
 .sun-status {
   margin-top: 10px;
