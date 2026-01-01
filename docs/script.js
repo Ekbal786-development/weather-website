@@ -361,14 +361,13 @@ function getDailyIconFor(icon) {
 }
 
 function generateWeatherSummary(data) {
-  const tempC = Math.round(data.main.temp);
+  const tempC = Math.round(getTempC(data));
   const condition = data.weather[0].main.toLowerCase();
   const windKmh = Math.round(getWindKmh(data));
 
   const now = data.dt;
   const sunrise = data.sys.sunrise;
   const sunset = data.sys.sunset;
-
   const isNight = now >= sunset || now < sunrise;
 
   // 🌙 NIGHT — no “good wishes”
@@ -746,6 +745,7 @@ function updateUI(data) {
   const sunrise = data.sys.sunrise;
   const sunset = data.sys.sunset;
   const greetingEl = document.getElementById("intel-greeting");
+
 if (greetingEl) {
   greetingEl.textContent = getSmartGreeting(
     data.dt,
@@ -753,9 +753,6 @@ if (greetingEl) {
     data.sys.sunset
   );
 }
-
-
-
   document.body.classList.remove(
     "day", 
     "night",
@@ -812,7 +809,7 @@ if (greetingEl) {
      MAIN WEATHER INFO
   ================================ */
   cityEl.textContent = data.name;
-  tempEl.textContent = `${convertTemp(data.main.temp)}${tempUnit()}`;
+  tempEl.textContent = `${convertTemp(getTempC(data))}${tempUnit()}`;
   document.getElementById("feels-like").textContent = `${convertTemp(data.main.feels_like)}${tempUnit()}`;
   descriptionEl.textContent = data.weather[0].description;
   document.getElementById("humidity-text").textContent = `${data.main.humidity}%`;
