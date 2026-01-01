@@ -803,7 +803,7 @@ if (greetingEl) {
   ================================ */
   cityEl.textContent = data.name;
   tempEl.textContent = `${convertTemp(data.main.temp)}${tempUnit()}`;
-  document.getElementById("feels-like").textContent = `${Math.round(data.main.feels_like)}°C`;
+  document.getElementById("feels-like").textContent = `${convertTemp(data.main.feels_like)}${tempUnit()}`;
   descriptionEl.textContent = data.weather[0].description;
   document.getElementById("humidity-text").textContent = `${data.main.humidity}%`;
 
@@ -913,8 +913,8 @@ function renderHourlyForecast(list, timezoneOffset, currentData) {
   currentData.sys.sunrise,
   currentData.sys.sunset
 )}" />
- 
-      <span>${Math.round(currentData.main.temp)}°</span>
+
+      <span>${convertTemp(currentData.main.temp)}${tempUnit()}</span>
     </div>
   `;
 
@@ -960,14 +960,14 @@ function renderDailyForecast(list, currentData) {
   Object.entries(days)
     .slice(0, 5)
     .forEach(([date, items], i) => {
-      const temps = items.map(i => i.main.temp);
-      const max = Math.round(Math.max(...temps));
-      const min = Math.round(Math.min(...temps));
+      const temps = items.map(i => convertTemp(i.main.temp));
+      const max = Math.max(...temps);
+      const min = Math.min(...temps);
 
       const icon =
         items[Math.floor(items.length / 2)]?.weather?.[0]?.icon || "01d";
 
-      if (i === 0) todayRangeEl.textContent = `${max}°/${min}°`;
+      if (i === 0) todayRangeEl.textContent = `${max}${tempUnit()} / ${min}${tempUnit()}`;
 
       dailyList.innerHTML += `
         <div class="daily-item">
@@ -975,7 +975,7 @@ function renderDailyForecast(list, currentData) {
             weekday: "short"
           })}</div>
           <img src="images/${getDailyIconFor(icon)}" alt="icon" />
-          <span>${max}° / ${min}°</span>
+          <span>${max}${tempUnit()} / ${min}${tempUnit()}</span>
         </div>`;
     });
 }
