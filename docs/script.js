@@ -3,12 +3,13 @@ const BASE_URL = "https://weather-backend-wo0y.onrender.com";
 /* ===============================
       🕒 TIME FORMAT HELPER
 ================================ */
-function formatTime(unix, timezoneOffset) {
+function formatSunTime(unix, timezoneOffset) {
   return new Date((unix + timezoneOffset) * 1000).toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit'
+    hour: "2-digit",
+    minute: "2-digit"
   });
 }
+
 function getCityNow(timezoneOffset) {
   return Math.floor(Date.now() / 1000) + timezoneOffset;
 }
@@ -26,8 +27,8 @@ function updateSunriseSunset(data) {
   const indicatorEl = document.getElementById("sun-indicator");
   const statusEl = document.getElementById("sun-status");
 
-  sunriseEl.textContent = formatTime(sunrise, tz);
-  sunsetEl.textContent = formatTime(sunset, tz);
+  sunriseEl.textContent = formatSunTime(sunrise, tz);
+  sunsetEl.textContent = formatSunTime(sunset, tz);
 
   //  🌙 Night time
   if (now < sunrise || now > sunset) {
