@@ -23,8 +23,11 @@ function updateSunriseSunset(data) {
   const indicatorEl = document.getElementById("sun-indicator");
   const statusEl = document.getElementById("sun-status");
 
-  if (!sunriseEl || !sunsetEl || !fillEl || !indicatorEl || !statusEl) return;
-
+  if (!sunriseEl || !sunsetEl || !fillEl || !indicatorEl || !statusEl)
+    {
+    console.warn("Sunrise-Sunset elements missing, skipping update");
+    return;
+    }
 
   sunriseEl.textContent = formatSunTime(sunrise, tz);
   sunsetEl.textContent = formatSunTime(sunset, tz);
@@ -46,8 +49,6 @@ function updateSunriseSunset(data) {
     indicatorEl.style.left = `${percent}%`;
     statusEl.textContent = "☀️ Daylight in progress";
 }
-
-
 
 /* ===============================
    PERFORMANCE DETECTION
