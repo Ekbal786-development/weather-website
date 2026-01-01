@@ -3,8 +3,8 @@ const BASE_URL = "https://weather-backend-wo0y.onrender.com";
 /* ===============================
       🕒 TIME FORMAT HELPER
 ================================ */
-function formatTime(unixTime) {
-  return new Date(unixTime * 1000).toLocaleTimeString([], {
+function formatTime(unix, timezoneOffset) {
+  return new Date((unix + timezoneOffset) * 1000).toLocaleTimeString([], {
     hour: '2-digit',
     minute: '2-digit'
   });
@@ -13,65 +13,41 @@ function getCityNow(timezoneOffset) {
   return Math.floor(Date.now() / 1000) + timezoneOffset;
 }
 
+function updateSunriseSunset(data) {
+  const sunrise = data.sys.sunrise;
+  const sunset = data.sys.sunset;
+  const tz = data.timezone;
 
-/* ==========================
-   ☀️🌙 SUN–MOON ANIMATION
-========================== */
-function updateSunMoon(sunrise, sunset, timezone) {
-  const now = getCityNow(timezone);
-  const isDay = now >= sunrise && now <= sunset;
+  const now = Math.floor(Date.now() / 1000) + tz;
 
-  const sun = document.querySelector(".sun");
-  const moon = document.querySelector(".moon");
+  const sunriseEl = document.getElementById("sunrise-time");
+  const sunsetEl = document.getElementById("sunset-time");
+  const fillEl = document.getElementById("sunr-progress-fill");
+  const indicatorEl = document.getElementById("sun-indicator");
+  const statusEl = document.getElementById("sun-status");
 
-  if (!sun || !moon) return; // safety check
+  sunriseEl.textContent = formatTime(sunrise, tz);
+  sunsetEl.textContent = formatTime(sunset, tz);
 
-  document.getElementById("sunrise-time").textContent =
-    "Sunrise: " + formatTime(sunrise);
+  //  🌙 Night time
+  if (now < sunrise || now > sunset) {
+    fillEl.style.width = "100%";
+    indicatorEl.style.left = "100%";
+    statusEl.textContent = "🌙 Currently night in this city";
+    return;
 
-  document.getElementById("sunset-time").textContent =
-    "Sunset: " + formatTime(sunset);
-
-  if (now >= sunrise && now <= sunset) {
-    const progress = (now - sunrise) / (sunset - sunrise);
-    const arcWidth = 260; 
-    const arcHeight = 95;
-
-    const x = progress * arcWidth; 
-    const y = Math.sin(progress * Math.PI) * arcHeight;
-
-    sun.style.transform = `translate(${x}px, ${-y}px)`;
-    if (isDay) {
-      sun.style.opacity = 1;
-      moon.style.opacity = 0;
-
-      const progress = (now - sunrise) / (sunset - sunrise);
-
-      document.getElementById("day-progress-fill").style.width = 
-      `${Math.min(progress * 100, 100)}%`;
-
-      document.getElementById("day-progress-dot").style.left =
-      `${Math.min(progress * 100, 100)}%`;
-
-    } else {
-      sun.style.opacity = 0;
-      moon.style.opacity = 1;
-      
-      document.getElementById("day-progress-fill").style.width = "100%";
-      document.getElementById("day-progress-dot").style.left = "100%";
-    }
-
-
-    const progressDot = document.getElementById("day-progress-dot");
-    if (progressDot) {
-    progressDot.style.left = `${progress * 100}%`;
-    }
-  } else {
-    sun.style.opacity = 0;
-    moon.style.opacity = 1;
-    moon.style.transform = "translate(120px, -40px)";
   }
+
+    // ☀️ Daytime progress
+    const progress = ((now - sunrise) / (sunset - sunrise));
+    const percent = Math.min(Math.max(progress * 100, 0), 100);
+
+    fillEl.style.width = `${percent}%`;
+    indicatorEl.style.left = `${percent}%`;
+    statusEl.textContent = "☀️ Daylight in progress";
 }
+
+
 
 /* ===============================
    PERFORMANCE DETECTION
@@ -451,11 +427,7 @@ async function fetchWeather(city) {
 
     updateUI(data);
 
-    updateSunMoon(
-      data.sys.sunrise,
-      data.sys.sunset,
-      data.timezone
-    );
+    updateSunriseSunset(data);
 
     fetchForecast(city, data);
 
