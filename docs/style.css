@@ -324,6 +324,12 @@ body {
   box-shadow: 0 0 10px rgba(180, 200, 255, 0.8);
   display: none;
 }
+.moon-info {
+  margin-left: 4px;
+  cursor: help;
+  font-size: 13px;
+  opacity: 0.8;
+}
 
 .sun-status {
   margin-top: 10px;
