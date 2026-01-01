@@ -11,11 +11,11 @@ function formatSunTime(unix, timezoneOffset) {
 }
 
 function updateSunriseSunset(data) {
-  const sunrise = data.sys.sunrise;
-  const sunset = data.sys.sunset;
+  const sunriseUTC = data.sys.sunrise;
+  const sunsetUTC = data.sys.sunset;
   const tz = data.timezone;
 
-  const now = Math.floor(Date.now() / 1000) + tz;
+  const nowUTC = Math.floor(Date.now() / 1000);
 
   const sunriseEl = document.getElementById("sunrise-time");
   const sunsetEl = document.getElementById("sunset-time");
@@ -29,11 +29,11 @@ function updateSunriseSunset(data) {
     return;
     }
 
-  sunriseEl.textContent = formatSunTime(sunrise, tz);
-  sunsetEl.textContent = formatSunTime(sunset, tz);
+  sunriseEl.textContent = formatSunTime(sunriseUTC, tz);
+  sunsetEl.textContent = formatSunTime(sunsetUTC, tz);
 
   //  🌙 Night time
-  if (now < sunrise || now > sunset) {
+  if (nowUTC < sunriseUTC || nowUTC > sunsetUTC) {
     fillEl.style.width = "100%";
     indicatorEl.style.left = "100%";
     statusEl.textContent = "🌙 Currently night in this city";
@@ -42,7 +42,7 @@ function updateSunriseSunset(data) {
   }
 
     // ☀️ Daytime progress
-    const progress = ((now - sunrise) / (sunset - sunrise));
+    const progress = ((nowUTC - sunriseUTC) / (sunsetUTC - sunriseUTC));
     const percent = Math.min(Math.max(progress * 100, 0), 100);
 
     fillEl.style.width = `${percent}%`;
