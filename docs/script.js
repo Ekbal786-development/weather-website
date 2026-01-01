@@ -1,13 +1,15 @@
 const BASE_URL = "https://weather-backend-wo0y.onrender.com";
+let sunProgressInterval = null;
 
 /* ===============================
       🕒 TIME FORMAT HELPER
 ================================ */
 function updateSunriseSunset(data) {
-  const sunrise = data.sys.sunrise; // UTC seconds
-  const sunset = data.sys.sunset;   // UTC seconds
-  const tz = data.timezone;         // offset seconds
-  const now = data.dt;              // ✅ city current time (UTC seconds)
+  const sunrise = data.sys.sunrise;
+  const sunset = data.sys.sunset;
+  const tz = data.timezone;
+
+  const now = data.dt; // ✅ CRITICAL: city-local timestamp
 
   const sunriseEl = document.getElementById("sunrise-time");
   const sunsetEl = document.getElementById("sunset-time");
@@ -28,14 +30,37 @@ function updateSunriseSunset(data) {
     return;
   }
 
-  // ☀️ Day
+  // ☀️ Day progress
   const progress = (now - sunrise) / (sunset - sunrise);
-  const percent = Math.round(progress * 100);
+  const percent = Math.min(Math.max(progress * 100, 0), 100);
 
   fillEl.style.width = `${percent}%`;
   indicatorEl.style.left = `${percent}%`;
   statusEl.textContent = "☀️ Daylight in progress";
 }
+
+function startSunProgressUpdates(data) {
+  // Clear old interval if exists
+  if (sunProgressInterval) {
+    clearInterval(sunProgressInterval);
+  }
+
+  // Update immediately
+  updateSunriseSunset(data);
+
+  // Update every 60 seconds
+  sunProgressInterval = setInterval(() => {
+    // Advance time manually by 60s
+    data = {
+      ...data,
+      dt: data.dt + 60
+    };
+
+    updateSunriseSunset(data);
+  }, 60000);
+}
+
+
 function formatSunTime(unix, timezoneOffset) {
   const d = new Date((unix + timezoneOffset) * 1000);
   return `${String(d.getUTCHours()).padStart(2, "0")}:${String(
@@ -455,7 +480,7 @@ async function fetchWeather(city) {
 
     updateUI(data);
 
-    updateSunriseSunset(data);
+    startSunProgressUpdates(data);
 
     fetchForecast(city, data);
 
