@@ -101,7 +101,23 @@ function updateSunriseSunset(data) {
   fillEl.style.width = `${percent}%`;
   indicatorEl.style.left = `${percent}%`;
   statusEl.textContent = "☀️ Daylight in progress";
+
+  /* ===============================
+     🌙 MOON PHASE (SunCalc)
+  ================================ */
+  const moonEl = document.getElementById("moon-phase-icon");
+  const moonTextEl = document.getElementById("moon-phase-text");
+
+  if (moonEl && moonTextEl) {
+    const moonIllum = SunCalc.getMoonIllumination(new Date());
+    const phaseInfo = getMoonPhaseInfo(moonIllum.phase);
+
+    moonEl.textContent = phaseInfo.emoji;
+    moonTextEl.textContent =
+      `${phaseInfo.name} — ${Math.round(moonIllum.fraction * 100)}% illuminated`;
+  }
 }
+
 
 function updateMoonTimes(data) {
   const lat = data.coord.lat;
@@ -178,15 +194,22 @@ function updateMoonProgress(data) {
   moonEl.style.left = `${percent}%`;
 }
 
-function getMoonPhaseName(phase) {
-  if (phase === 0 || phase === 1) return "New Moon";
-  if (phase < 0.25) return "Waxing Crescent";
-  if (phase === 0.25) return "First Quarter";
-  if (phase < 0.5) return "Waxing Gibbous";
-  if (phase === 0.5) return "Full Moon";
-  if (phase < 0.75) return "Waning Gibbous";
-  if (phase === 0.75) return "Last Quarter";
-  return "Waning Crescent";
+function getMoonPhaseInfo(phase) {
+  if (phase < 0.03 || phase > 0.97)
+    return { emoji: "🌑", name: "New Moon" };
+  if (phase < 0.22)
+    return { emoji: "🌒", name: "Waxing Crescent" };
+  if (phase < 0.28)
+    return { emoji: "🌓", name: "First Quarter" };
+  if (phase < 0.47)
+    return { emoji: "🌔", name: "Waxing Gibbous" };
+  if (phase < 0.53)
+    return { emoji: "🌕", name: "Full Moon" };
+  if (phase < 0.72)
+    return { emoji: "🌖", name: "Waning Gibbous" };
+  if (phase < 0.78)
+    return { emoji: "🌗", name: "Last Quarter" };
+  return { emoji: "🌘", name: "Waning Crescent" };
 }
 
 /* ===============================
@@ -785,7 +808,7 @@ if (moonPhaseText) {
   );
 
   const phase = moonData.phase; // 0 → 1
-  moonPhaseText.textContent = getMoonPhaseName(phase);
+  moonPhaseText.textContent = getMoonPhaseInfo(phase);
 
   // Optional icon support (if images exist)
   if (moonPhaseIcon) {

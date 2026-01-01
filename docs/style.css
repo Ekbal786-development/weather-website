@@ -350,17 +350,15 @@ body {
 }
 
 .moon-phase {
-  margin-top: 12px;
+  margin-top: 8px;
   display: flex;
   align-items: center;
-  gap: 14px;
-  justify-content: center;
+  gap: 8px;
 }
 
-.moon-phase img {
-  width: 36px;
-  height: 36px;
-  animation: moonFloat 4s ease-in-out infinite;
+.moon-emoji {
+  font-size: 22px;
+  transition: transform 0.6s ease;
 }
 @keyframes moonFloat {
   0%, 100% { transform: translateY(0); }
