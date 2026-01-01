@@ -361,7 +361,7 @@ function getDailyIconFor(icon) {
 }
 
 function generateWeatherSummary(data) {
-  const temp = Math.round(data.main.temp);
+  const temp = convertTemp(data.main.temp);
   const condition = data.weather[0].main.toLowerCase();
   const windKmh = Math.round(data.wind.speed * 3.6);
 
@@ -565,7 +565,7 @@ function renderHourlyTempChart(list, timezoneOffset) {
   list.slice(0, 8).forEach((item) => {
     const d = new Date((item.dt + timezoneOffset) * 1000);
     labels.push(`${String(d.getUTCHours()).padStart(2, "0")}:00`);
-    temps.push(Math.round(item.main.temp));
+    temps.push(convertTemp(item.main.temp));
   });
 
   const minTemp = Math.min(...temps) - 2;
@@ -616,7 +616,7 @@ function renderHourlyTempChart(list, timezoneOffset) {
           padding: 10,
           displayColors: false,
           callbacks: {
-            label: (ctx) => ` ${ctx.raw}°C`
+            label: (ctx) => ` ${ctx.raw}${tempUnit()}`
           }
         }
       },
@@ -941,7 +941,7 @@ function renderHourlyForecast(list, timezoneOffset, currentData) {
           currentData.sys.sunrise,
           currentData.sys.sunset
        )}" />
-        <span>${convertTemp(item.main.temp)}°</span>
+        <span>${convertTemp(item.main.temp)}${tempUnit()}</span>
       </div>
     `;
   });
@@ -961,8 +961,8 @@ function renderDailyForecast(list, currentData) {
     .slice(0, 5)
     .forEach(([date, items], i) => {
       const temps = items.map(i => convertTemp(i.main.temp));
-      const max = Math.max(...temps);
-      const min = Math.min(...temps);
+      const max = Math.round(Math.max(...temps));
+      const min = Math.round(Math.min(...temps));
 
       const icon =
         items[Math.floor(items.length / 2)]?.weather?.[0]?.icon || "01d";
