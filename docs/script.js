@@ -135,6 +135,30 @@ function updateMoonTimes(data) {
   }
 }
 
+function updateMoonPhase(data) {
+  const phaseEl = document.getElementById("moon-phase-text");
+  if (!phaseEl) return;
+
+  const date = new Date((data.dt + data.timezone) * 1000);
+  const moon = SunCalc.getMoonIllumination(date);
+
+  const phase = moon.phase;
+  const illumination = Math.round(moon.fraction * 100);
+
+  let phaseName = "New Moon";
+  if (phase < 0.03 || phase > 0.97) phaseName = "New Moon";
+  else if (phase < 0.22) phaseName = "Waxing Crescent";
+  else if (phase < 0.28) phaseName = "First Quarter";
+  else if (phase < 0.47) phaseName = "Waxing Gibbous";
+  else if (phase < 0.53) phaseName = "Full Moon";
+  else if (phase < 0.72) phaseName = "Waning Gibbous";
+  else if (phase < 0.78) phaseName = "Last Quarter";
+  else phaseName = "Waning Crescent";
+
+  phaseEl.textContent = `🌙 ${phaseName} — ${illumination}% illuminated`;
+}
+
+
 /* ===============================
    PERFORMANCE DETECTION
 ================================ */
@@ -514,6 +538,8 @@ async function fetchWeather(city) {
     startSunProgressUpdates(data);
 
     updateMoonTimes(data);
+
+    updateMoonPhase(data);
 
     fetchForecast(city, data);
 
