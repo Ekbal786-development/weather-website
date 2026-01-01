@@ -361,9 +361,9 @@ function getDailyIconFor(icon) {
 }
 
 function generateWeatherSummary(data) {
-  const tempC = Math.round(getTempC(data));
+  const tempC = getTempC(data);
   const condition = data.weather[0].main.toLowerCase();
-  const windKmh = Math.round(getWindKmh(data));
+  const windKmh = getWindKmh(data);
 
   const now = data.dt;
   const sunrise = data.sys.sunrise;
@@ -410,7 +410,7 @@ function generateWeatherSummary(data) {
 function generateOutfitSuggestion(data) {
   const tempC = getTempC(data);
   const condition = data.weather[0].main.toLowerCase();
-  const windKmh = Math.round(getWindKmh(data));
+  const windKmh = getWindKmh(data);
 
   const now = data.dt;
   const sunrise = data.sys.sunrise;
@@ -488,7 +488,7 @@ function getTempC(data) {
 }
 
 function getWindKmh(data) {
-  return getWindKmh(data); // m/s → km/h
+  return data.wind.speed * 3.6; // m/s → km/h
 }
 
 
@@ -497,7 +497,6 @@ function calculateWeatherScore(data) {
 
   const tempC = getTempC(data);
   const condition = data.weather[0].main.toLowerCase();
-  const windKmh = Math.round(getWindKmh(data));
 
   const now = data.dt;
   const sunrise = data.sys.sunrise;
@@ -516,8 +515,8 @@ function calculateWeatherScore(data) {
   if (condition.includes("thunder")) score -= 4;
 
   // Wind
-  if (windKmh > 30) score -= 2;
-  else if (windKmh > 20) score -= 1;
+  if (getWindKmh(data) > 30) score -= 2;
+  else if (getWindKmh(data) > 20) score -= 1;
 
   // Night penalty (slightly)
   if (isNight) score -= 1;
