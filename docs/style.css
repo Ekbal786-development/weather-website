@@ -1157,3 +1157,22 @@ body.night .panel-overlay {
   background: rgba(0,0,0,0.4);
 }
 
+.unit-toggle {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  background: linear-gradient(135deg, #4facfe, #0b69ff);
+  color: white;
+  transition: transform 0.2s ease;
+}
+
+.unit-toggle:hover {
+  transform: translateY(-2px);
+}
+
+body.night .unit-toggle {
+  background: linear-gradient(135deg, #64748b, #334155);
+}

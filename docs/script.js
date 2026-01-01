@@ -1,5 +1,9 @@
 const BASE_URL = "https://weather-backend-wo0y.onrender.com";
 let sunProgressInterval = null;
+let unitSystem = localStorage.getItem("unitSystem") || "metric";
+// metric = °C, km/h
+// imperial = °F, mph
+
 
 /* ===============================
       🕒 TIME FORMAT HELPER
@@ -17,7 +21,11 @@ function updateSunriseSunset(data) {
   const indicatorEl = document.getElementById("sun-indicator");
   const statusEl = document.getElementById("sun-status");
 
-  if (!sunriseEl || !sunsetEl || !fillEl || !indicatorEl || !statusEl) return;
+  if (!sunriseEl || !sunsetEl || !fillEl || !indicatorEl || !statusEl) {
+    console.warn("Sun UI elements missing — skipping update");
+    return;
+
+  }
 
   sunriseEl.textContent = formatSunTime(sunrise, tz);
   sunsetEl.textContent = formatSunTime(sunset, tz);
@@ -453,6 +461,28 @@ function generateOutfitSuggestion(data) {
   };
 }
 
+function convertTemp(tempC) {
+  return unitSystem === "metric"
+    ? Math.round(tempC)
+    : Math.round(tempC * 9 / 5 + 32);
+}
+
+function convertWind(speedMs) {
+  const kmh = speedMs * 3.6;
+  return unitSystem === "metric"
+    ? Math.round(kmh)
+    : Math.round(kmh / 1.609);
+}
+
+function tempUnit() {
+  return unitSystem === "metric" ? "°C" : "°F";
+}
+
+function windUnit() {
+  return unitSystem === "metric" ? "km/h" : "mph";
+}
+
+
 function calculateWeatherScore(data) {
   let score = 10;
 
@@ -772,7 +802,7 @@ if (greetingEl) {
      MAIN WEATHER INFO
   ================================ */
   cityEl.textContent = data.name;
-  tempEl.textContent = `${Math.round(data.main.temp)}°C`;
+  tempEl.textContent = `${convertTemp(data.main.temp)}${tempUnit()}`;
   document.getElementById("feels-like").textContent = `${Math.round(data.main.feels_like)}°C`;
   descriptionEl.textContent = data.weather[0].description;
   document.getElementById("humidity-text").textContent = `${data.main.humidity}%`;
@@ -798,7 +828,7 @@ if (greetingEl) {
 
 if (windText) {
   const windSpeedKmh = Math.round(data.wind.speed * 3.6);
-  windText.textContent = `${windSpeedKmh} km/h`;
+  windText.textContent = `${convertWind(data.wind.speed)} ${windUnit()}`;
 }
 
   /* ===============================
@@ -911,7 +941,7 @@ function renderHourlyForecast(list, timezoneOffset, currentData) {
           currentData.sys.sunrise,
           currentData.sys.sunset
        )}" />
-        <span>${Math.round(item.main.temp)}°</span>
+        <span>${convertTemp(item.main.temp)}°</span>
       </div>
     `;
   });
@@ -1077,5 +1107,29 @@ setInterval(() => {
 }, 60 * 1000); // every minute
 
 
+const unitToggleBtn = document.getElementById("unit-toggle");
+
+function updateUnitButton() {
+  if (!unitToggleBtn) return;
+  unitToggleBtn.textContent =
+    unitSystem === "metric"
+      ? "🌡️ °C / km/h"
+      : "🌡️ °F / mph";
+}
+
+if (unitToggleBtn) {
+  updateUnitButton();
+
+  unitToggleBtn.addEventListener("click", () => {
+    unitSystem =
+      unitSystem === "metric" ? "imperial" : "metric";
+
+    localStorage.setItem("unitSystem", unitSystem);
+    updateUnitButton();
+
+    const city = localStorage.getItem("lastCity");
+    if (city) fetchWeather(city);
+  });
+}
 
 
