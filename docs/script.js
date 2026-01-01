@@ -211,6 +211,47 @@ function getMoonPhaseInfo(phase) {
     return { emoji: "🌗", name: "Last Quarter" };
   return { emoji: "🌘", name: "Waning Crescent" };
 }
+function updateMoonMovement(data) {
+  const lat = data.coord.lat;
+  const lon = data.coord.lon;
+  const tz = data.timezone;
+
+  const now = new Date(Date.now() + tz * 1000);
+  const moonTimes = SunCalc.getMoonTimes(now, lat, lon);
+
+  const moonEl = document.getElementById("moon-indicator");
+  const moonriseEl = document.getElementById("moonrise-time");
+  const moonsetEl = document.getElementById("moonset-time");
+
+  if (!moonEl || !moonTimes.rise || !moonTimes.set) {
+    moonEl.style.opacity = 0;
+    return;
+  }
+
+  const rise = moonTimes.rise.getTime();
+  const set = moonTimes.set.getTime();
+  const current = now.getTime();
+
+  moonriseEl.textContent = moonTimes.rise.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+
+  moonsetEl.textContent = moonTimes.set.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+
+  // 🌙 Only move moon if it's above horizon
+  if (current >= rise && current <= set) {
+    const progress = (current - rise) / (set - rise);
+    moonEl.style.left = `${Math.min(progress * 100, 100)}%`;
+    moonEl.style.opacity = 1;
+  } else {
+    moonEl.style.opacity = 0;
+  }
+}
+
 
 /* ===============================
    PERFORMANCE DETECTION
@@ -590,7 +631,9 @@ async function fetchWeather(city) {
 
     updateUI(data);
 
-    updateSunriseSunset(data);
+    startSunProgressUpdates(data);
+
+    updateMoonMovement(data);
 
     updateMoonTimes(data);
 
@@ -1029,6 +1072,7 @@ function removeFavorite(city) {
 setInterval(() => {
   if (window.__currentWeatherData) {
     updateSunriseSunset(window.__currentWeatherData);
+    updateMoonMovement(window.__currentWeatherData);
   }
 }, 60 * 1000); // every minute
 
