@@ -363,7 +363,7 @@ function getDailyIconFor(icon) {
 function generateWeatherSummary(data) {
   const tempC = Math.round(data.main.temp);
   const condition = data.weather[0].main.toLowerCase();
-  const windKmh = Math.round(data.wind.speed * 3.6);
+  const windKmh = Math.round(getWindKmh(data));
 
   const now = data.dt;
   const sunrise = data.sys.sunrise;
@@ -409,9 +409,9 @@ function generateWeatherSummary(data) {
 }
 
 function generateOutfitSuggestion(data) {
-  const temp = data.main.temp;
+  const tempC = getTempC(data);
   const condition = data.weather[0].main.toLowerCase();
-  const windKmh = Math.round(data.wind.speed * 3.6);
+  const windKmh = Math.round(getWindKmh(data));
 
   const now = data.dt;
   const sunrise = data.sys.sunrise;
@@ -435,7 +435,7 @@ function generateOutfitSuggestion(data) {
     return { icon: "🧥", text: "A windproof jacket is a good choice." };
   }
 
-  if (temp >= 28) {
+  if (tempC >= 28) {
     return {
       icon: "👕",
       text: isNight
@@ -444,7 +444,7 @@ function generateOutfitSuggestion(data) {
     };
   }
 
-  if (temp <= 10) {
+  if (tempC <= 10) {
     return {
       icon: "🧣",
       text: isNight
@@ -481,14 +481,24 @@ function tempUnit() {
 function windUnit() {
   return unitSystem === "metric" ? "km/h" : "mph";
 }
+// 🔒 BASE UNIT HELPERS (FOR LOGIC ONLY)
+// These NEVER depend on unit toggle
+
+function getTempC(data) {
+  return data.main.temp; // Always Celsius
+}
+
+function getWindKmh(data) {
+  return getWindKmh(data); // m/s → km/h
+}
 
 
 function calculateWeatherScore(data) {
   let score = 10;
 
-  const temp = data.main.temp;
+  const tempC = getTempC(data);
   const condition = data.weather[0].main.toLowerCase();
-  const windKmh = Math.round(data.wind.speed * 3.6);
+  const windKmh = Math.round(getWindKmh(data));
 
   const now = data.dt;
   const sunrise = data.sys.sunrise;
@@ -497,9 +507,9 @@ function calculateWeatherScore(data) {
   const isNight = now >= sunset || now < sunrise;
 
   // Temperature comfort
-  if (temp < 5 || temp > 35) score -= 3;
-  else if (temp < 10 || temp > 30) score -= 2;
-  else if (temp < 15 || temp > 27) score -= 1;
+  if (tempC < 5 || tempC > 35) score -= 3;
+  else if (tempC < 10 || tempC > 30) score -= 2;
+  else if (tempC < 15 || tempC > 27) score -= 1;
 
   // Weather conditions
   if (condition.includes("rain")) score -= 2;
@@ -827,7 +837,6 @@ if (greetingEl) {
   const windText = document.getElementById("wind-text");
 
 if (windText) {
-  const windSpeedKmh = Math.round(data.wind.speed * 3.6);
   windText.textContent = `${convertWind(data.wind.speed)} ${windUnit()}`;
 }
 
